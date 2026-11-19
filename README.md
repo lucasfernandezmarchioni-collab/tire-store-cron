@@ -1,2 +1,4 @@
 # tire-store-cron
-Reloj que cada 15 minutos le avisa al publicador de Tire Store que revise la fila de posts.
+
+Cada 15 minutos le avisa al publicador de Tire Store (Vercel) que revise si hay posts para subir a Instagram y Facebook.
+No contiene claves ni datos privados.

@@ -1,0 +1,30 @@
+name: Reloj publicador
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Avisar al publicador
+        run: |
+          curl -s -m 90 -w '\nHTTP %{http_code}\n' https://tire-store-publicador.vercel.app/api/tick
+
+      # GitHub apaga los relojes de repos sin actividad en 60 dias: cada ~50 dias hace un commit vacio.
+      - uses: actions/checkout@v4
+      - name: Mantener vivo
+        run: |
+          last=$(git log -1 --format=%ct)
+          if [ $(( $(date +%s) - last )) -gt $(( 50*24*3600 )) ]; then
+            git config user.name 'tire-store-bot'
+            git config user.email 'actions@users.noreply.github.com'
+            git commit --allow-empty -m 'mantener reloj activo'
+            git push
+          fi
